@@ -1,0 +1,16 @@
+{
+    "name":"omtask",
+    "version":"0.1.0",
+
+    "description":"omtask is an omnibox task manager for people that want to finish tasks, not organize them.",
+    "icons":{ 
+        "16":"icon16.png",
+        "48":"icon48.png",
+        "128":"icon128.png" 
+    },
+
+    "background_page":"background.html",
+    "omnibox":{ 
+        "keyword":"t"
+    }
+}

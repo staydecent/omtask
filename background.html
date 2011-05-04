@@ -1,0 +1,78 @@
+<script>
+/*
+    omtask
+    by Adrian Unger
+
+    version 0.1.0
+    http://staydecent.ca
+*/
+
+chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
+    // This event is fired each time the user updates the text in the omnibox,
+    // as long as the extension's keyword mode is still active.
+    suggest([
+        {content: text + " -c", description: "complete this task"},
+        {content: text + " -d", description: "delete this task"}
+    ]);
+});
+
+chrome.omnibox.onInputEntered.addListener(function(text) {
+    /*
+        Setup
+    */
+    var omtask = {},
+        task = "";
+
+    omtask.tasks = localStorage.getItem('omtasks');
+    if (omtask.tasks === null) {
+        localStorage.setItem('omtasks', '{}');
+        omtask.tasks = JSON.parse(localStorage.getItem('omtasks'));
+    }
+    else {
+        omtask.tasks = JSON.parse(omtask.tasks);
+    }
+    omtask.count = localStorage.getItem('omtaskCount');
+    if (omtask.count === null) {
+        localStorage.setItem('omtaskCount', '0');
+        omtask.count = parseInt(localStorage.getItem('omtaskCount'));
+    }
+    else {
+        omtask.count = parseInt(omtask.count);
+    }
+
+    if (!text) {
+        // list tasks
+        chrome.tabs.create({ url : 'list.html' });
+        return true;
+    }
+
+    if (/\s\-[c]/.test(text)) {
+        // complete task
+        task = text.replace(/\s\-[c]/, '');
+        alert(task + " -completed");
+    }
+    else if (/\s\-[d]/.test(text)) {
+        // delete task
+        key = text.replace(/\s\-[d]/, '')
+        delete omtask.tasks[key];
+        localStorage.setItem('omtasks', JSON.stringify(omtask.tasks));
+    }
+    else if (/\-[d]\s/.test(text)) {
+        // delete task
+        key = text.replace(/\-[d]\s/, '')
+        delete omtask.tasks[key];
+        localStorage.setItem('omtasks', JSON.stringify(omtask.tasks));
+    }
+    else if (/\-[clear]/.test(text)) {
+        // clear all
+        localStorage.clear();
+    }
+    else {
+        // add task
+        var newCount = omtask.count + 1;
+        localStorage.setItem('omtaskCount', newCount+'');
+        omtask.tasks[newCount+''] = text;
+        localStorage.setItem('omtasks', JSON.stringify(omtask.tasks));
+    }
+});
+</script>
