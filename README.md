@@ -26,11 +26,11 @@ To add a task, type the description after entering *omtask mode*:
 
 To see your tasks, enter *omtask mode* and hit enter without typing anything:
 
-   t 
-   <in new tab>
-   [3] Eat lunch
-   [2] Update HTML5 video players
-   [1] Clean the apartment
+    t 
+    <in new tab>
+    [3] Eat lunch
+    [2] Update HTML5 video players
+    [1] Clean the apartment
 
 This will load a new tab with a simple html list of your Tasks and their IDs. The list automatically updates when you add or delete a task.
 
@@ -38,11 +38,11 @@ This will load a new tab with a simple html list of your Tasks and their IDs. Th
 
 To remove a task from your list, type `t ID -d` or `t -d ID`:
 
-   t 2 -d
-   t 
-   <in new tab>
-   [3] Eat lunch
-   [1] Clean the apartment
+    t 2 -d
+    t 
+    <in new tab>
+    [3] Eat lunch
+    [1] Clean the apartment
 
 ### Clearing All Tasks
 
