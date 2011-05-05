@@ -11,17 +11,17 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
     // This event is fired each time the user updates the text in the omnibox,
     // as long as the extension's keyword mode is still active.
     suggest([
-        {content: text + " -c", description: "complete this task"},
+        {content: text + " -e", description: "edit this task"},
         {content: text + " -d", description: "delete this task"}
     ]);
 });
 
 chrome.omnibox.onInputEntered.addListener(function(text) {
-    /*
-        Setup
-    */
+    // Input Returned
     var omtask = {},
         task = "";
+
+    omtask.re = /([0-9])\s([\d,\w,\s\`\~\@\#\$\%\^\&\*\(\)\-\=\_\+\[\]\{\}\;\'\:\"\,\.\/\<\>\?]+)/
 
     omtask.tasks = localStorage.getItem('omtasks');
     if (omtask.tasks === null) {
@@ -40,35 +40,41 @@ chrome.omnibox.onInputEntered.addListener(function(text) {
         omtask.count = parseInt(omtask.count);
     }
 
+    // list tasks
     if (!text) {
-        // list tasks
         chrome.tabs.create({ url : 'list.html' });
         return true;
     }
-
-    if (/\s\-[c]/.test(text)) {
-        // complete task
-        task = text.replace(/\s\-[c]/, '');
-        alert(task + " -completed");
+    // edit task
+    if (/\s\-[e]/.test(text)) {
+        task = text.replace(/\s\-[e]/, '');
+        match = task.match(omtask.re);
+        omtask.tasks[match[1]] = match[2];
+        localStorage.setItem('omtasks', JSON.stringify(omtask.tasks));
     }
+    else if (/\-[e]\s/.test(text)) {
+        task = text.replace(/\-[e]\s/, '');
+        match = task.match(omtask.re);
+        omtask.tasks[match[1]] = match[2];
+        localStorage.setItem('omtasks', JSON.stringify(omtask.tasks));
+    }
+    // delete task
     else if (/\s\-[d]/.test(text)) {
-        // delete task
         key = text.replace(/\s\-[d]/, '')
         delete omtask.tasks[key];
         localStorage.setItem('omtasks', JSON.stringify(omtask.tasks));
     }
     else if (/\-[d]\s/.test(text)) {
-        // delete task
         key = text.replace(/\-[d]\s/, '')
         delete omtask.tasks[key];
         localStorage.setItem('omtasks', JSON.stringify(omtask.tasks));
     }
+    // clear all
     else if (/\-[clear]/.test(text)) {
-        // clear all
         localStorage.clear();
     }
+    // add task
     else {
-        // add task
         var newCount = omtask.count + 1;
         localStorage.setItem('omtaskCount', newCount+'');
         omtask.tasks[newCount+''] = text;
